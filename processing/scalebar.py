@@ -52,14 +52,3 @@ def add_scalebar(img, meter_per_pixel, length, color = [1.0,1.0,1.0], line_thick
     img = np.array(im)
     return img
 
-if __name__ == '__main__':
-    IMG_PATH = "D:\\Projekte\\microscopy\\examples\\corona\\tiff\\2020-04-27_Chip-2_HUVEC_40x2.tiff"
-    
-    img = cv2.imread(IMG_PATH)
-    imsb = add_scalebar(img, 5e-7, 150e-6, text_size = 80)
-    
-    cv2.namedWindow('image',cv2.WINDOW_NORMAL)
-    cv2.imshow('image', imsb)
-    cv2.resizeWindow('image', 1024,768)
-    cv2.waitKey(0)  
-    cv2.destroyAllWindows() 

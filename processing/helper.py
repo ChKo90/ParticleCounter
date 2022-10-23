@@ -11,9 +11,9 @@ import numba
 import os
 from openpyxl import Workbook
 
-from imgobj import ImgObj
-from imgobj import obj_exists
-from scalebar import *
+from .imgobj import ImgObj
+from .imgobj import obj_exists
+
 
 def load(files):
     dfiles = {}

@@ -15,8 +15,8 @@ import glob
 import json
 import numba
 
-from helper import *
-from scalebar import *
+from . import helper as h
+from . import scalebar
 
 DIRECTORY = 'examples/6h/'
 MAX_CHANNELS = 5
@@ -108,8 +108,8 @@ def get_global_pixel_ranges(imgs, metadata):
 
 def process_channels(inp, gammas, minmins, maxmaxs):
     for i in range(len(inp)):
-        inp[i] = gamma_correction(inp[i], gammas[i])
-        inp[i] = color_scale(inp[i], minmins[i], maxmaxs[i])
+        inp[i] = h.gamma_correction(inp[i], gammas[i])
+        inp[i] = h.color_scale(inp[i], minmins[i], maxmaxs[i])
     return inp
 
 def process_file_group(imgs, filenames, params, metadata, determine_minmax):
@@ -140,20 +140,20 @@ def process_file_group(imgs, filenames, params, metadata, determine_minmax):
         
         for channel in range(len(rgbs)):
             for file_format in params['channel_outputs']:
-                add_scalebar(rgbs[channel], metadata['pixel_size'][0], 
-                             params['scalebar_length'], 
-                             params['scalebar_color'], 
-                             params['scalebar_line_thickness'],
-                             params['scalebar_text_size'])
-                cv2.imwrite(os.path.join(create_dir(comp_path, file_format), 'c{}_{}.{}'.format(channel, filename, file_format)), rgbs[channel])
+                scalebar.add_scalebar(rgbs[channel], metadata['pixel_size'][0],
+                                      params['scalebar_length'],
+                                      params['scalebar_color'],
+                                      params['scalebar_line_thickness'],
+                                      params['scalebar_text_size'])
+                cv2.imwrite(os.path.join(h.create_dir(comp_path, file_format), 'c{}_{}.{}'.format(channel, filename, file_format)), rgbs[channel])
         
         for file_format in params['merged_channel_outputs']:
-            add_scalebar(merged, metadata['pixel_size'][0], 
-                         params['scalebar_length'], 
-                         params['scalebar_color'], 
-                         params['scalebar_line_thickness'],
-                         params['scalebar_text_size'])
-            cv2.imwrite(os.path.join(create_dir(comp_path, file_format), '{}.{}'.format(filename, file_format)), merged)
+            scalebar.add_scalebar(merged, metadata['pixel_size'][0],
+                                  params['scalebar_length'],
+                                  params['scalebar_color'],
+                                  params['scalebar_line_thickness'],
+                                  params['scalebar_text_size'])
+            cv2.imwrite(os.path.join(h.create_dir(comp_path, file_format), '{}.{}'.format(filename, file_format)), merged)
             
 
 if __name__ == '__main__':
@@ -182,7 +182,7 @@ if __name__ == '__main__':
         else:
             determine_minmax = False
         files = glob.glob(os.path.join(comp_path, file_group))
-        imgs, filenames = load(files)
+        imgs, filenames = h.load(files)
         process_file_group(imgs, filenames, parameters[file_group], metadata[file_group], determine_minmax)
         
     with open(metafile, 'w') as file:

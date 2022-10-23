@@ -10,9 +10,9 @@ import glob
 import json
 import cv2
 
-import preprocessing as pp
-import helper as h
-import scalebar as sb
+from . import preprocessing as pp
+from . import helper as h
+from . import scalebar as sb
 
 import matplotlib.pyplot as plt
 import numpy as np

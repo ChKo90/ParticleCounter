@@ -8,8 +8,6 @@ Created on Mon Dec  6 11:54:31 2021
 from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtCore import Qt
 import numpy as np
-import cv2
-import sys
 import os
 import shutil
 import threading
@@ -18,9 +16,9 @@ import json
 from datetime import datetime
 from openpyxl import Workbook
 
-import ctrl
-from progress import Progress
-import helper as h
+from .progress import Progress
+from processing import ctrl
+from processing import helper as h
 
 DEFAULT_PARAMS = {  'scalebar_en' : True,
                     'scalebar_length' : 100e-6,
@@ -42,7 +40,8 @@ DEFAULT_PARAMS = {  'scalebar_en' : True,
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
-        uic.loadUi('mainwindow.ui', self) # Load the .ui file
+        ui_file = os.path.abspath(__file__ + '/../mainwindow.ui')
+        uic.loadUi(ui_file, self) # Load the .ui file
         
         self.ctrl = ctrl.Ctrl()
         self.params = dict(DEFAULT_PARAMS)
@@ -477,11 +476,3 @@ class Ui(QtWidgets.QMainWindow):
         self.btn_show_detection.setEnabled(True)
         self.btn_show_detection.setChecked(True)
     
-        
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
-    window = Ui() # Create an instance of our class
-    if 'get_ipython' in globals():
-        window.show()
-    else:
-        sys.exit(app.exec_()) # Start the application
