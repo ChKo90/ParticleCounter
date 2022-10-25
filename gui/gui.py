@@ -433,6 +433,7 @@ class Ui(QtWidgets.QMainWindow):
         if self.tabs_config.currentIndex() == 0:
             self._long_processing_start(len(self.ctrl.files) *
                                         (self.ctrl.get_num_channels() + int(self.check_export_merged.isChecked())))
+            workbook = None
         elif self.tabs_config.currentIndex() == 1:
             self._long_processing_start(len(self.ctrl.files))
             workbook = Workbook()
