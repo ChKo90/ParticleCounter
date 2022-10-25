@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec  6 11:54:31 2021
-
-@author: Christian
+Copyright 2022 by Christian König.
+All rights reserved.
 """
 
 from PyQt5 import QtWidgets, QtGui, uic
@@ -20,28 +18,29 @@ from .progress import Progress
 from processing import ctrl
 from processing import helper as h
 
-DEFAULT_PARAMS = {  'scalebar_en' : True,
-                    'scalebar_length' : 100e-6,
-                    'scalebar_color' : [1.0, 1.0, 1.0],
-                    'scalebar_line_thickness' : 4,
-                    'scalebar_text_size' : 80,
-                    'gamma' : [1.0]*5,
-                    'min_offset' : [0]*5,
-                    'max_offset' : [0]*5,
-                    'channel_colors_rgb' : [[0,1,0],[0,0,1],[1,0,0],[1,1,0],[0,1,1]],
-                    'obj_threshold' : 0,
-                    'obj_border_threshold' : 255,
-                    'obj_minsize' : 20,
-                    'obj_maxsize' : -1,
-                    'obj_border_color' : [1,0,0],
-                    'obj_area_color' : [1,1,1]
-                    }
+DEFAULT_PARAMS = {'scalebar_en': True,
+                  'scalebar_length': 100e-6,
+                  'scalebar_color': [1.0, 1.0, 1.0],
+                  'scalebar_line_thickness': 4,
+                  'scalebar_text_size': 80,
+                  'gamma': [1.0] * 5,
+                  'min_offset': [0] * 5,
+                  'max_offset': [0] * 5,
+                  'channel_colors_rgb': [[0, 1, 0], [0, 0, 1], [1, 0, 0], [1, 1, 0], [0, 1, 1]],
+                  'obj_threshold': 0,
+                  'obj_border_threshold': 255,
+                  'obj_minsize': 20,
+                  'obj_maxsize': -1,
+                  'obj_border_color': [1, 0, 0],
+                  'obj_area_color': [1, 1, 1]
+                  }
+
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
-        super(Ui, self).__init__() # Call the inherited classes __init__ method
+        super(Ui, self).__init__()
         ui_file = os.path.abspath(__file__ + '/../mainwindow.ui')
-        uic.loadUi(ui_file, self) # Load the .ui file
+        uic.loadUi(ui_file, self)
         
         self.ctrl = ctrl.Ctrl()
         self.params = dict(DEFAULT_PARAMS)

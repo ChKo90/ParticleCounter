@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Apr 20 18:38:40 2020
-
-@author: Christian
+Copyright 2022 by Christian König.
+All rights reserved.
 """
 
 import os
@@ -14,15 +12,18 @@ import json
 import sys
 from openpyxl import Workbook
 
-from helper import *
+from . import helper as h
+from . import scalebar
 
 DIRECTORY = 'daten/6h/'
 
-# Objekterkennung
+# step width in pixel for particle search
 SEARCH_STEP = 2
+
 
 def rgb_to_bgr(rgb):
     return np.array([rgb[2],rgb[1], rgb[0]])
+
 
 def process_file_group(params, metadata):
     workbook = Workbook()
@@ -33,7 +34,7 @@ def process_file_group(params, metadata):
         img = cv2.imread(file)
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (3,3),0)
-        thresh = color_scale(blurred, params['obj_threshold'], 255)
+        thresh = h.color_scale(blurred, params['obj_threshold'], 255)
         clipped = np.clip(thresh, 0, thresh.max()*0.9)
         
         laplacian = cv2.Laplacian(clipped,cv2.CV_64F)
@@ -42,24 +43,25 @@ def process_file_group(params, metadata):
         rembor = clipped.astype(np.uint8)
         rembor[borders>0] = 0
         
-        objects = detect_particles(rembor, SEARCH_STEP, 0, params['obj_minsize'])
-        colimg = colorize_objects(img, 
-                                  objects, 
-                                  rgb_to_bgr(params['obj_area_color']) * 255.0,
-                                  rgb_to_bgr(params['obj_border_color']) * 255.0)
+        objects = h.detect_particles(rembor, SEARCH_STEP, 0, params['obj_minsize'])
+        colimg = h.colorize_objects(img,
+                                    objects,
+                                    rgb_to_bgr(params['obj_area_color']) * 255.0,
+                                    rgb_to_bgr(params['obj_border_color']) * 255.0)
         
         filename = os.path.basename(file)
         dirname = os.path.dirname(file)
         index += 1
-        export_spreadsheet(workbook, objects, filename, index)
-        add_scalebar(colimg, metadata['pixel_size'][0], 
-                     params['scalebar_length'], 
-                     params['scalebar_color'], 
-                     params['scalebar_line_thickness'],
-                     params['scalebar_text_size'])
+        h.export_spreadsheet(workbook, objects, filename, index)
+        scalebar.add_scalebar(colimg, metadata['pixel_size'][0],
+                              params['scalebar_length'],
+                              params['scalebar_color'],
+                              params['scalebar_line_thickness'],
+                              params['scalebar_text_size'])
         cv2.imwrite(os.path.join(dirname, 'obj_' + filename), colimg)
         
     workbook.save(filename=os.path.join(dirname, 'results.xlsx'))
+
 
 if __name__ == '__main__':
     print('Particle counter')
@@ -80,7 +82,7 @@ if __name__ == '__main__':
     
     for file_group in parameters.keys():
         dir_pattern = os.path.splitext(os.path.basename(file_group))[0]
-        files_t = glob.glob(os.path.join(create_dir(comp_path, 'tiff'), dir_pattern + '.tiff'))
+        files_t = glob.glob(os.path.join(h.create_dir(comp_path, 'tiff'), dir_pattern + '.tiff'))
         files = []
         for file in files_t:
             filename = os.path.basename(file)

@@ -1,3 +1,7 @@
+"""
+Copyright 2022 by Christian König.
+All rights reserved.
+"""
 
 import sys
 import os

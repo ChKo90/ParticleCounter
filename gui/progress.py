@@ -1,16 +1,18 @@
-# -*- coding: utf-8 -*-
 """
-Created on Tue Jan 11 20:16:37 2022
-
-@author: Christian
+Copyright 2022 by Christian König.
+All rights reserved.
 """
 
 import time
 from PyQt5 import QtCore
 
+
 class Progress:
     
     def __init__(self, progressbar):
+        """
+        Progress bar helper class.
+        """
         self._finished = True
         self.progressbar = progressbar
     

@@ -1,16 +1,13 @@
-# -*- coding: utf-8 -*-
 """
-Created on Fri Jun 26 17:27:22 2020
-
-@author: Christian
+Copyright 2022 by Christian König.
+All rights reserved.
 """
 
-import os, sys
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
 import decimal
 from PIL import Image, ImageDraw, ImageFont
+
 
 def to_unit_prefix(num):
     d = decimal.Decimal('{0:.0E}'.format(num))
@@ -25,6 +22,7 @@ def to_unit_prefix(num):
         return '{} mm'.format(int(round(num*1e3)))
     else:
         return '{} m'.format(int(round(num)))
+
 
 def add_scalebar(img, meter_per_pixel, length, color = [1.0,1.0,1.0], line_thickness = 4, text_size = 80):
     if length == 0.:

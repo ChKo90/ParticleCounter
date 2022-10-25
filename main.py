@@ -1,3 +1,7 @@
+"""
+Copyright 2022 by Christian König.
+All rights reserved.
+"""
 
 import sys
 from PyQt5 import QtWidgets
@@ -10,4 +14,4 @@ if __name__ == '__main__':
     if 'get_ipython' in globals():
         window.show()
     else:
-        sys.exit(app.exec_()) # Start the application
+        sys.exit(app.exec_())

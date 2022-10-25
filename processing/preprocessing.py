@@ -13,7 +13,6 @@ import matplotlib.pyplot as plt
 import cv2
 import glob
 import json
-import numba
 
 from . import helper as h
 from . import scalebar
@@ -21,6 +20,7 @@ from . import scalebar
 DIRECTORY = 'examples/6h/'
 MAX_CHANNELS = 5
 HIST_BINS = 512
+
 
 def compress_data(file, comp_path):
     czi = czifile.CziFile(file)
@@ -55,6 +55,7 @@ def compress_data(file, comp_path):
     
     return out
 
+
 def check_parameters(path):
     filepath = os.path.join(path, 'parameters.json')
     if os.path.exists(filepath):
@@ -82,6 +83,7 @@ def check_parameters(path):
             json.dump(parameters, json_file, indent=4)
     return parameters
 
+
 def check_metadata(directory):
     metafile = os.path.join(directory, 'metadata.json')
     metadata = {}
@@ -89,6 +91,7 @@ def check_metadata(directory):
         with open(metafile) as json_file:
             metadata = json.load(json_file)
     return metafile, metadata
+
 
 def create_hists(imgs, minmins, maxmaxs):
     for ch in range(len(imgs[0])):
@@ -100,17 +103,20 @@ def create_hists(imgs, minmins, maxmaxs):
         plt.savefig(filename)
         plt.close()
 
+
 def get_global_pixel_ranges(imgs, metadata):
     print('Determine global pixel ranges...')
     for ch in range(len(imgs[0])):
         metadata['minmins'][ch] = int(imgs[:,ch,:,:].min())
         metadata['maxmaxs'][ch] = int(imgs[:,ch,:,:].max())
 
+
 def process_channels(inp, gammas, minmins, maxmaxs):
     for i in range(len(inp)):
         inp[i] = h.gamma_correction(inp[i], gammas[i])
         inp[i] = h.color_scale(inp[i], minmins[i], maxmaxs[i])
     return inp
+
 
 def process_file_group(imgs, filenames, params, metadata, determine_minmax):
     if determine_minmax:

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
-Created on Tue Apr 21 18:43:55 2020
-
-@author: Christian
+Copyright 2022 by Christian König.
+All rights reserved.
 """
 
 
@@ -10,6 +8,7 @@ import numpy as np
 import cv2
 import numba
 import matplotlib.pyplot as plt
+
 
 @numba.jit(nopython=True)
 def neighbours(img, y, x):
@@ -32,6 +31,7 @@ def neighbours(img, y, x):
         result.append([y,x+1])
     return result
 
+
 @numba.jit(nopython=True)
 def detect_opt(img, y, x, threshold):
     pixel = [[y,x]]
@@ -51,7 +51,7 @@ def detect_opt(img, y, x, threshold):
     
     return pixel
 
-#@numba.jit(nopython=True)
+
 def normdist(q, p0, p1):
     q  = np.array(q)
     p0 = np.array(p0)
@@ -59,6 +59,7 @@ def normdist(q, p0, p1):
     n = np.linalg.norm(np.cross(p1, q-p0))
     a = np.linalg.norm(p1)
     return n/a
+
 
 class ImgObj:
     
@@ -124,6 +125,9 @@ class ImgObj:
         return ind_s
     
     def get_snake_heads(self, step, min_dist, m_tol, distlu_tol, best=1):
+        """
+        experimental
+        """
         ind_s = self.edge_indizes_sorted()
         snake_heads = []
         for i in range(len(ind_s)):

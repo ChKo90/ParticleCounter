@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Dec  6 11:57:15 2021
-
-@author: Christian
+Copyright 2022 by Christian König.
+All rights reserved.
 """
 
 import os
@@ -16,6 +14,7 @@ from . import scalebar as sb
 
 import matplotlib.pyplot as plt
 import numpy as np
+
 
 class Ctrl:
     
@@ -178,8 +177,26 @@ class Ctrl:
         # ax.xlim((self.gmins[channel], self.gmaxs[channel]))
         fig.canvas.draw()
         return np.array(fig.canvas.renderer.buffer_rgba())
-    
+
+
 def grey16_2_rgb888(img, colorf=[1,1,1], dtype = np.uint8):
+    """
+    16 bit grey scale image to RGB conversion
+
+    Parameters
+    ----------
+    img: np,.ndarray
+        input image np.uint16
+    colorf: list of floats
+        color channel scale factors, optional
+    dtype:
+        numpy data type of the returned image
+
+    Returns
+    -------
+    np.ndarray of type dtype
+        RGB image
+    """
     rgb = np.zeros((*img.shape, 3), dtype = dtype)
     img8 = img >> 8
     rgb[:,:,0] = img8 * colorf[0]
