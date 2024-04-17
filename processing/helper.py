@@ -55,16 +55,25 @@ def color_scale(img, min_, max_):
 
 
 def detect_particles(img, step, threshold, minsize):
+    threshold_mask = img > threshold
     objects = []
     for y in range(0, len(img), step):
         for x in range(0, len(img[0]), step):
-            if img[y][x] > threshold:
+            if threshold_mask[y][x]:
                 if not obj_exists(objects, y, x):
                     obj = ImgObj(img.shape)
-                    if obj.detect(img, y, x, threshold, minsize):
-                        objects.append(obj)
-                        print('Object {} at row {} column {} with size {}'.format(len(objects)-1, y, x, obj.size()))
-    return objects
+                    obj.detect(img, y, x, threshold_mask)
+                    objects.append(obj)
+                    print('Object {} at row {} column {} with size {}'.format(len(objects)-1, y, x, obj.size()))
+
+    result = []
+    for particle in objects:
+        if particle.is_at_border() or len(particle.mask[particle.mask]) < minsize:
+            pass
+        else:
+            result.append(particle)
+
+    return result
 
 
 # palette
@@ -110,7 +119,8 @@ def export_spreadsheet(workbook, objects, name, index):
     sheet["A4"] = "correction"
     sheet["A5"] = ""
     sheet["A6"] = "average"
-    
+
+    index += 1
     sheet.cell(1, index).value = name
     sheet.cell(2, index).value = area
     carea = sheet.cell(2, index).coordinate

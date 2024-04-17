@@ -33,19 +33,19 @@ def neighbours(img, y, x):
 
 
 @numba.jit(nopython=True)
-def detect_opt(img, y, x, threshold):
+def detect_opt(img, y, x, threshold_mask):
     pixel = [[y,x]]
     index = 0
     while index < len(pixel):
         y = pixel[index][0]
         x = pixel[index][1]
-        if y-1 >= 0 and img[y-1,x] > threshold and [y-1,x] not in pixel:
+        if y-1 >= 0 and threshold_mask[y-1,x] and [y-1,x] not in pixel:
             pixel.append([y-1,x])
-        if y+1 < len(img) and img[y+1,x] > threshold and [y+1,x] not in pixel:
+        if y+1 < len(img) and threshold_mask[y+1,x] and [y+1,x] not in pixel:
             pixel.append([y+1,x])
-        if x-1 >= 0 and img[y,x-1] > threshold and [y,x-1] not in pixel:
+        if x-1 >= 0 and threshold_mask[y,x-1] and [y,x-1] not in pixel:
             pixel.append([y,x-1])
-        if x+1 < len(img[0]) and img[y,x+1] > threshold and [y,x+1] not in pixel:
+        if x+1 < len(img[0]) and threshold_mask[y,x+1] and [y,x+1] not in pixel:
             pixel.append([y,x+1])
         index += 1
     
@@ -66,26 +66,24 @@ class ImgObj:
     def __init__(self, shape):
         self.mask = np.array(np.zeros(shape), dtype = np.uint8)
         
-    def detect(self, img, y, x, threshold = 0, minsize = 1, skip_border = True):
-        pixel = detect_opt(img, y, x, threshold)
+    def detect(self, img, y, x, threshold_mask):
+        pixel = detect_opt(img, y, x, threshold_mask)
         m = self.mask.copy()
         for p in pixel:
             m[p[0], p[1]] = 255
         kernel = np.ones((3,3))
         m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, kernel, iterations=5).astype(np.bool)
-        
-        if skip_border:
-            first_row = len(np.argwhere(m[0,:])) > 0
-            last_row = len(np.argwhere(m[-1,:])) > 0
-            first_col = len(np.argwhere(m[:,0])) > 0
-            last_col = len(np.argwhere(m[:,-1])) > 0
-            skip_border = first_row or last_row or first_col or last_col
-        
-        if len(m[m]) >= minsize and not skip_border:
-            self.mask = m
-            return True
-        else:
-            return False
+        self.mask = m
+
+    def is_at_border(self):
+        """
+        Returns True, if the detected object hits the border of the image.
+        """
+        first_row = self.mask[0, :].any()
+        last_row = self.mask[-1, :].any()
+        first_col = self.mask[:, 0].any()
+        last_col = self.mask[:, -1].any()
+        return first_row or last_row or first_col or last_col
         
     def size(self):
         return len(self.mask[self.mask])
