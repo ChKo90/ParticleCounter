@@ -72,7 +72,7 @@ class ImgObj:
         for p in pixel:
             m[p[0], p[1]] = 255
         kernel = np.ones((3,3))
-        m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, kernel, iterations=5).astype(np.bool)
+        m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, kernel, iterations=5).astype(bool)
         self.mask = m
 
     def is_at_border(self):

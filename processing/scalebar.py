@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import decimal
 from PIL import Image, ImageDraw, ImageFont
+from PIL import __version__ as pilversion
 
 
 def to_unit_prefix(num):
@@ -44,8 +45,12 @@ def add_scalebar(img, meter_per_pixel, length, color = [1.0,1.0,1.0], line_thick
     font = ImageFont.truetype("arial.ttf", text_size)
     im = Image.fromarray(img)
     d = ImageDraw.Draw(im)
-    tsize = font.getsize(unit)
-    t = (m2[1] - l + (l-tsize[0])/2, m2[0])
+    if int(pilversion.split('.')[0]) > 9:
+        left, top, right, bottom = font.getbbox(unit)
+        tsize = right - left
+    else:
+        tsize = font.getsize(unit)[0]
+    t = (m2[1] - l + (l-tsize)/2, m2[0])
     d.text(t, unit, fill=tuple(np.uint32(color).tolist()), font=font)
     img = np.array(im)
     return img
